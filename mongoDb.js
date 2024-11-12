@@ -194,11 +194,92 @@ const { moviesSchema } = require('./utils/mongoSchema');
     // console.log(result7);
 
     //? Відобразити фільми з тегами 'thriller' та 'superhero'
-    const result8 = await Movie.find(
-      { tags: { $all: ['thriller', 'superhero'] } },
-      'title tags'
-    );
-    console.log(result8);
+    // const result8 = await Movie.find(
+    //   { tags: { $all: ['thriller', 'superhero'] } },
+    //   'title tags'
+    // );
+    // console.log(result8);
+
+    //! U
+    //? Оновити тривалість фільму "Interstellar" до 150 хвилин.
+    // const updatedMovie1 = await Movie.findOneAndUpdate(
+    //   { title: 'Interstellar' },
+    //   { $set: { duration: 150 } }
+    // );
+    // console.log(updatedMovie1);
+
+    //? Додати новий тег "blockbuster" до фільму "The Matrix". (оператор $push)
+    // const updatedMovie2 = await Movie.findOneAndUpdate(
+    //   { title: 'The Matrix' },
+    //   { $push: { tags: 'blockbuster' } }
+    // );
+    // console.log(updatedMovie2);
+
+    //! D
+
+    //? Видалити фільм "Joker" з колекції.
+    // const deletedMovie1 = await Movie.findOneAndDelete({ title: 'Joker' });
+    // console.log(deletedMovie1);
+
+    //? Видалити всі фільми, випущені до 1980 року
+    // const deletedMovies = await Movie.deleteMany({
+    //   releaseYear: { $lt: 1980 },
+    // });
+    // console.log(deletedMovies);
+
+    //! Aggregation pipeline:
+
+    // const result9 = await Movie.aggregate([
+    //   {
+    //     $group: {
+    //       _id: '$genre',
+    //       averageDuration: { $avg: '$duration' },
+    //     },
+    //   },
+    // ]);
+    // console.log(result9);
+
+    //? Знайдіть жанр із найбільшою кількістю фільмів.
+    // const result10 = await Movie.aggregate([
+    //   {
+    //     $group: {
+    //       _id: '$genre',
+    //       count: { $sum: 1 },
+    //     },
+    //   },
+    //   {
+    //     $sort: { count: -1 },
+    //   },
+    //   {
+    //     $limit: 1,
+    //   },
+    // ]);
+    // console.log(result10);
+
+    //? Підрахуйте загальні збори (revenue) фільмів за країнами
+    // const result11 = await Movie.aggregate([
+    //   {
+    //     $group: {
+    //       _id: '$country',
+    //       totalRevenue: { $sum: '$boxOffice.revenue' },
+    //     },
+    //   },
+    // ]);
+    // console.log(result11);
+
+    //? Підрахувати кількість фільмів, знятих в кожній країні після 2010 року
+    const result12 = await Movie.aggregate([
+      {
+        $match: { releaseYear: { $gt: 2010 } },
+      },
+      {
+        $group: {
+          _id: '$country',
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+    console.log(result12);
   } catch (err) {
     err => console.log(err);
   }
